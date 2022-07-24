@@ -118,7 +118,7 @@ document.addEventListener('wheel', (event) => {
 
 var adjust_far_v = 1000;
 function adjust_far(direction) {
-  adjust_far_v *= direction > 0 ? 3 : 0.33;
+  adjust_far_v *= direction > 0 ? 2 : 0.5;
   camera.far = adjust_far_v;
   fog.far = adjust_far_v;
   camera.updateProjectionMatrix();
@@ -151,9 +151,11 @@ elem.addEventListener('pointerdown', (event) => {
   pointer.x = ( (event.clientX - elem.clientLeft) / elem.width ) * 2 - 1;
   pointer.y = - ( (event.clientY - elem.clientTop) / elem.height ) * 2 + 1;
   raycaster.setFromCamera( pointer, camera );
-  const intersects = raycaster.intersectObjects( groupSprites.children );
-  //console.log(['intersects', intersects]);
-  // TODO: check intersects[].uv alpha pixels = ignore
+  const intersects = raycaster
+    .intersectObjects( groupSprites.children )
+    // only insersect with the ones visible (far in fog = hidden)
+    .filter(s => s.distance <= fog.far);
+  //console.log(['intersects', intersects])
 
   if (selected != null)
     selected.material.color.set( 0xffffff );
