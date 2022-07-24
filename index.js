@@ -111,9 +111,10 @@ function adjust_speed(direction) {
   flyControls.movementSpeed = adjust_speed_v;
 }
 document.addEventListener('wheel', (event) => {
-  const direction = event.wheelDelta > 0 ? +1 : -1;
-  adjust_sprite(direction);
-  adjust_speed(direction);
+  const direction = event.wheelDeltaY > 0 ? +1 : -1;
+    adjust_speed(direction);
+  if (event.getModifierState('Shift'))
+    adjust_sprite(direction);
 });
 
 var adjust_far_v = 1000;
@@ -128,13 +129,20 @@ function click_bg_color(color) {
   setBgColor(color);
 }
 
-function highlightFilter(f) {
+function highlightClear() {
+  groupSprites.children.forEach(s => {
+    s.material.color.set( 0xffffff );
+  });
+  scale_sprite(adjust_sprite_v);
+}
+function highlightFilter(f, size) {
   count = 0
+  size = size || 2
   groupSprites.children.forEach(s => {
     isTarget = f(s.userData);
     s.material.color.set( isTarget ? 0xffffff : 0x444444 );
     if (isTarget) {
-      s.scale.multiplyScalar(2);
+      s.scale.multiplyScalar(size);
       count++;
     }
   });
