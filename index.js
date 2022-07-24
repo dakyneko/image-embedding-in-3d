@@ -106,14 +106,20 @@ function adjust_sprite(direction) {
   scale_sprite(adjust_sprite_v);
 }
 
+var scroll_mode = true;
+document.addEventListener('keydown', (event) => {
+  switch (event.code) {
+    case 'ShiftLeft': scroll_mode = !scroll_mode; break;
+  }
+});
 function adjust_speed(direction) {
   adjust_speed_v *= direction > 0 ? 1.5 : 0.75;
   flyControls.movementSpeed = adjust_speed_v;
 }
 document.addEventListener('wheel', (event) => {
   const direction = event.wheelDeltaY > 0 ? +1 : -1;
-    adjust_speed(direction);
-  if (event.getModifierState('Shift'))
+  adjust_speed(direction);
+  if (event.getModifierState('Shift') != scroll_mode)
     adjust_sprite(direction);
 });
 
